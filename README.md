@@ -27,10 +27,7 @@ from sklearn.metrics import accuracy_score, classification_report
 df = pd.read_csv("spam.csv", encoding="latin1")
 
 # Select required columns
-df = df[["v1", "v2"]]
-
-# Remove missing values
-df = df.dropna()
+df = df[["v1", "v2"]].dropna()
 
 # Input and output
 X = df["v2"]
@@ -40,28 +37,30 @@ y = df["v1"]
 vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(X)
 
-# Split the dataset
+# Split data
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
-    test_size=0.2,
-    random_state=42
+    X, y, test_size=0.2, random_state=42
 )
 
-# Create SVM model
+# Create and train SVM model
 model = SVC(kernel="linear")
-
-# Train the model
 model.fit(X_train, y_train)
 
-# Predict
+# Test the model
 y_pred = model.predict(X_test)
 
-# Accuracy
 print("Accuracy:", accuracy_score(y_test, y_pred))
 
-# Classification report
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred))
+# Predict new message
+new_message = input("\nEnter a new message: ")
+
+# Convert new message using the same TF-IDF vectorizer
+new_message_tfidf = vectorizer.transform([new_message])
+
+# Prediction
+prediction = model.predict(new_message_tfidf)
+
+print("Prediction:", prediction[0])
 ```
 ## Output:
 
